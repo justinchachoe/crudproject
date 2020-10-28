@@ -66,3 +66,15 @@ def new(request):
             word_dictionary[word] = 1
 
     return render(request, 'new.html', {'fulltext': full_text, 'total': len(word_list), 'dictionary': word_dictionary.items()} )
+
+def search(request):
+    blogs = Blog.objects.all().order_by('-id')
+
+    q = request.POST.get('q', "") 
+
+    if q:
+        blogs = blogs.filter(title__icontains=q)
+        return render(request, 'search.html', {'blogs' : blogs, 'q' : q})
+    
+    else:
+        return render(request, 'search.html')
