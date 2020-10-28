@@ -1,4 +1,5 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
 from .models import Blog
 
 # Create your views here.
@@ -10,6 +11,17 @@ def home(request):
 def detail(request, blog_id):
     blog_detail = get_object_or_404(Blog, pk=blog_id)
     return render(request, 'detail.html', {'blog': blog_detail})
+
+def create(request):
+    return render(request, 'create.html')
+
+def postcreate(request):
+    blog = Blog()
+    blog.title = request.GET['title']
+    blog.body = request.GET['body']
+    blog.pub_date = timezone.datetime.now()
+    blog.save()
+    return redirect('/crudapp/detail/' + str(blog.id))
 
 def new(request):
     full_text = request.GET['fulltext']
